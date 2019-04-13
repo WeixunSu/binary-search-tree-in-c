@@ -1,62 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct DoubleLinkedNode{
-	struct DoubleLinkedNode* leftChild;
-	struct DoubleLinkedNode* rightChild;
+typedef struct _tnode{
+	struct _tnode *lNode;
+	struct _tnode *rNode;
 	int value;
-};
+} tnode;
 
-struct DoubleLinkedNode* newNode(int value){
-	struct DoubleLinkedNode* new = (struct DoubleLinkedNode*)malloc(sizeof(struct DoubleLinkedNode));
-	new->leftChild = NULL;
-	new->rightChild = NULL;
+tnode *newNode(int value){
+	tnode* new = (tnode*)malloc(sizeof(tnode));
+	new->lNode = NULL;
+	new->rNode = NULL;
 	new->value = value;
 	return new;
 }
 
-struct Tree{
-	struct DoubleLinkedNode* root;
-};
-
-struct DoubleLinkedNode* treeInsert(struct DoubleLinkedNode* root, int value){
+tnode *treeInsert(tnode *root, int value){
 	// If tree/subtree is empty
 	if (root == NULL) return newNode(value);
 	// If not empty
 	if (value < root->value){
-		printf("%d is to the left of %d \n", value, root->value);
-		root->leftChild = treeInsert(root->leftChild, value);
+		root->lNode = treeInsert(root->lNode, value);
 	}else if (value > root->value) {
-		printf("%d is to the right of %d \n", value, root->value);
-		root->rightChild = treeInsert(root->rightChild, value);
+		root->rNode = treeInsert(root->rNode, value);
 	}else{
-		printf("%d is already in the tree!\n", value);
+		fprintf(stderr, "%d is already in the tree!\n", value);
 	}
 	return root;
 }
 
 // Print tree from left to right
-void treeTraversal(struct DoubleLinkedNode* root){
+void treeTraversal(tnode *root){
 	if (root != NULL){
-		treeTraversal(root->leftChild);
+		treeTraversal(root->lNode);
 		printf("%d\n", root->value);
-		treeTraversal(root->rightChild);
+		treeTraversal(root->rNode);
 	}
 	return;
 }
 
 int main(){
-	struct Tree t = {.root = NULL};
+	tnode *root;
+	int val,n;
 
-	printf("Insert node in random sequence: \n");
-	t.root = treeInsert(t.root, 6);
-	treeInsert(t.root, 3);
-	treeInsert(t.root, 5);
-	treeInsert(t.root, 1);
-	treeInsert(t.root, 4);
-	treeInsert(t.root, 2);
-
+	printf("Enter nodes into a tree, enter any alpha to exit. \n");
+	while (n = scanf("%d", &val) > 0){
+		root = treeInsert(root, val);
+	}
+	
 	printf("Print tree in sorted order: \n");
-	treeTraversal(t.root);
+	treeTraversal(root);
 	return 0;
 }
